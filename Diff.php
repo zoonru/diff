@@ -38,9 +38,9 @@ class Diff
         $n_to = count($to_lines);
         $total = 0;
 
-        $this->xchanged = $this->ychanged = array();
-        $this->xv = $this->yv = array();
-        $this->xind = $this->yind = array();
+        $this->xchanged = $this->ychanged = [];
+        $this->xv = $this->yv = [];
+        $this->xind = $this->yind = [];
         unset($this->seq);
         unset($this->in_seq);
         unset($this->lcs);
@@ -92,14 +92,14 @@ class Diff
         $this->shiftBoundaries($to_lines, $this->ychanged, $this->xchanged);
 
         // Compute the edit operations.
-        $edits = array();
+        $edits = [];
         $xi = $yi = 0;
         while ($xi < $n_from || $yi < $n_to) {
-            assert($yi < $n_to || $this->xchanged[$xi]);
-            assert($xi < $n_from || $this->ychanged[$yi]);
+            //assert($yi < $n_to || $this->xchanged[$xi]);
+            //assert($xi < $n_from || $this->ychanged[$yi]);
 
             // Skip matching "snake".
-            $copy = array();
+            $copy = [];
             while ($xi < $n_from && $yi < $n_to
                    && !$this->xchanged[$xi] && !$this->ychanged[$yi]) {
                 $copy[] = $from_lines[$xi++];
@@ -110,12 +110,12 @@ class Diff
             }
 
             // Find deletes & adds.
-            $delete = array();
+            $delete = [];
             while ($xi < $n_from && $this->xchanged[$xi]) {
                 $delete[] = $from_lines[$xi++];
             }
 
-            $add = array();
+            $add = [];
             while ($yi < $n_to && $this->ychanged[$yi]) {
                 $add[] = $to_lines[$yi++];
             }
@@ -160,7 +160,7 @@ class Diff
              * shortest sequence is in X. */
             $flip = true;
             list ($xoff, $xlim, $yoff, $ylim)
-                = array($yoff, $ylim, $xoff, $xlim);
+                = [$yoff, $ylim, $xoff, $xlim];
         }
 
         if ($flip) {
@@ -175,8 +175,8 @@ class Diff
 
         $this->lcs = 0;
         $this->seq[0]= $yoff - 1;
-        $this->in_seq = array();
-        $ymids[0] = array();
+        $this->in_seq = [];
+        $ymids[0] = [];
 
         $numer = $xlim - $xoff + $nchunks - 1;
         $x = $xoff;
@@ -195,17 +195,17 @@ class Diff
                 }
                 $matches = $ymatches[$line];
                 reset($matches);
-                while (list(, $y) = each($matches)) {
+                foreach ($matches as list(, $y)) {
                     if (empty($this->in_seq[$y])) {
                         $k = $this->lcsPos($y);
-                        assert($k > 0);
+                        //assert($k > 0);
                         $ymids[$k] = $ymids[$k - 1];
                         break;
                     }
                 }
-                while (list(, $y) = each($matches)) {
+                foreach ($matches as list(, $y)) {
                     if ($y > $this->seq[$k - 1]) {
-                        assert($y <= $this->seq[$k]);
+                        //assert($y <= $this->seq[$k]);
                         /* Optimization: this is a common case: next match is
                          * just replacing previous match. */
                         $this->in_seq[$this->seq[$k]] = false;
@@ -213,23 +213,23 @@ class Diff
                         $this->in_seq[$y] = 1;
                     } elseif (empty($this->in_seq[$y])) {
                         $k = $this->lcsPos($y);
-                        assert($k > 0);
+                        //assert($k > 0);
                         $ymids[$k] = $ymids[$k - 1];
                     }
                 }
             }
         }
 
-        $seps[] = $flip ? array($yoff, $xoff) : array($xoff, $yoff);
+        $seps[] = $flip ? [$yoff, $xoff] : [$xoff, $yoff];
         $ymid = $ymids[$this->lcs];
         for ($n = 0; $n < $nchunks - 1; $n++) {
             $x1 = $xoff + (int)(($numer + ($xlim - $xoff) * $n) / $nchunks);
             $y1 = $ymid[$n] + 1;
-            $seps[] = $flip ? array($y1, $x1) : array($x1, $y1);
+            $seps[] = $flip ? [$y1, $x1] : [$x1, $y1];
         }
-        $seps[] = $flip ? array($ylim, $xlim) : array($xlim, $ylim);
+        $seps[] = $flip ? [$ylim, $xlim] : [$xlim, $ylim];
 
-        return array($this->lcs, $seps);
+        return [$this->lcs, $seps];
     }
 
     protected function lcsPos($ypos)
@@ -251,7 +251,7 @@ class Diff
             }
         }
 
-        assert($ypos != $this->seq[$end]);
+        //assert($ypos != $this->seq[$end]);
 
         $this->in_seq[$this->seq[$end]] = false;
         $this->seq[$end] = $ypos;
@@ -334,8 +334,7 @@ class Diff
     {
         $i = 0;
         $j = 0;
-
-        assert('count($lines) == count($changed)');
+        //assert(count($lines) == count($changed));
         $len = count($lines);
         $other_len = count($other_changed);
 
@@ -356,7 +355,7 @@ class Diff
             }
 
             while ($i < $len && ! $changed[$i]) {
-                assert('$j < $other_len && ! $other_changed[$j]');
+                //assert($j < $other_len && ! $other_changed[$j]);
                 $i++; $j++;
                 while ($j < $other_len && $other_changed[$j]) {
                     $j++;
@@ -388,11 +387,11 @@ class Diff
                     while ($start > 0 && $changed[$start - 1]) {
                         $start--;
                     }
-                    assert('$j > 0');
+                    //assert($j > 0);
                     while ($other_changed[--$j]) {
                         continue;
                     }
-                    assert('$j >= 0 && !$other_changed[$j]');
+                    //assert($j >= 0 && !$other_changed[$j]);
                 }
 
                 /* Set CORRESPONDING to the end of the changed run, at the
@@ -413,7 +412,7 @@ class Diff
                         $i++;
                     }
 
-                    assert('$j < $other_len && ! $other_changed[$j]');
+                    //assert($j < $other_len && ! $other_changed[$j]);
                     $j++;
                     if ($j < $other_len && $other_changed[$j]) {
                         $corresponding = $i;
@@ -429,11 +428,11 @@ class Diff
             while ($corresponding < $i) {
                 $changed[--$start] = 1;
                 $changed[--$i] = 0;
-                assert('$j > 0');
+                //assert($j > 0);
                 while ($other_changed[--$j]) {
                     continue;
                 }
-                assert('$j >= 0 && !$other_changed[$j]');
+                //assert($j >= 0 && !$other_changed[$j]);
             }
         }
     }
