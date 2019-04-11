@@ -12,5 +12,5 @@
 	},
 	"autoload": {
 		"classmap": "Diff.php"
-	},
+	}
 }
