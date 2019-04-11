@@ -1,0 +1,16 @@
+{
+	"name": "zoonru/diff",
+	"description": "Diff lib for php7",
+	"repositories": [
+		{
+			"type": "git",
+			"url": "https://github.com/zoonru/diff.git"
+		}
+	],
+	"require": {
+		"php": "^5.6 || ^7.0",
+	},
+	"autoload": {
+		"classmap": "Diff.php"
+	},
+}
