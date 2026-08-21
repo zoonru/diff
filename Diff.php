@@ -32,6 +32,16 @@
  */
 class Diff {
 
+	protected array $xv = [];
+	protected array $yv = [];
+	protected array $xind = [];
+	protected array $yind = [];
+	protected array $xchanged = [];
+	protected array $ychanged = [];
+	protected int $lcs = 0;
+	protected array $seq = [];
+	protected array $in_seq = [];
+
 	public function compare($from_lines, $to_lines, $is_copy_include = false) {
 		$n_from = \count($from_lines);
 		$n_to = \count($to_lines);
@@ -40,9 +50,9 @@ class Diff {
 		$this->xchanged = $this->ychanged = [];
 		$this->xv = $this->yv = [];
 		$this->xind = $this->yind = [];
-		unset($this->seq);
-		unset($this->in_seq);
-		unset($this->lcs);
+		$this->seq = [];
+		$this->in_seq = [];
+		$this->lcs = 0;
 
 		// Skip leading common lines.
 		for ($skip = 0; $skip < $n_from && $skip < $n_to; $skip++) {
