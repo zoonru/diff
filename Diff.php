@@ -243,6 +243,9 @@ class Diff {
 		return [$this->lcs, $seps];
 	}
 
+	/**
+	 * @psalm-capabilities read-props|write-this-props|write-refs
+	 */
 	protected function lcsPos($ypos) {
 		$end = $this->lcs;
 		if ($end == 0 || $ypos > $this->seq[$end]) {
@@ -341,6 +344,7 @@ class Diff {
 	 * following identical line to be the "change".
 	 *
 	 * This is extracted verbatim from analyze.c (GNU diffutils-2.7).
+	 * @psalm-capabilities read-props|write-this-props|write-refs
 	 */
 	protected function shiftBoundaries($lines, &$changed, $other_changed): void {
 		$i = 0;
