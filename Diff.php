@@ -42,6 +42,10 @@ class Diff {
 	protected array $seq = [];
 	protected array $in_seq = [];
 
+	/**
+	 * @psalm-flow ($from_lines, $to_lines) -> return
+	 * @psalm-taint-specialize
+	 */
 	public function compare($from_lines, $to_lines, $is_copy_include = false) {
 		$n_from = \count($from_lines);
 		$n_to = \count($to_lines);
